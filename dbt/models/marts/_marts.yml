@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: fct_transferts_cedeao
+    description: Table de faits, grain = un transfert individuel.
+    columns:
+      - name: transfert_id
+        tests: [not_null, unique]
+      - name: devise_cible
+        tests:
+          - relationships:
+              to: ref('dim_devises')
+              field: code_devise
+      - name: statut
+        tests:
+          - accepted_values:
+              values: ['SUCCESS', 'FAILED', 'PENDING']
+
+  - name: dim_devises
+    columns:
+      - name: code_devise
+        tests: [not_null, unique]
+
+  - name: dim_corridor
+    columns:
+      - name: pays
+        tests: [not_null, unique]
+
+  - name: dim_canaux
+    columns:
+      - name: canal
+        tests: [not_null, unique]

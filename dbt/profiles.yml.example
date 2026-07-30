@@ -1,0 +1,14 @@
+# Copier ce fichier vers ~/.dbt/profiles.yml (PAS dans le repo) et
+# remplacer les valeurs entre <>.
+
+cedeao_remitflow:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: <ton-project-id-gcp>
+      dataset: dbt_dev_<ton_prenom>
+      keyfile: /chemin/local/vers/ta-cle-service-account.json
+      threads: 4
+      location: EU

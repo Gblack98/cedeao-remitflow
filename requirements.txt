@@ -1,0 +1,7 @@
+apache-airflow==2.9.*
+apache-airflow-providers-google
+dbt-core
+dbt-bigquery
+faker
+requests
+google-cloud-bigquery

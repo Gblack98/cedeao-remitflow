@@ -1,0 +1,24 @@
+name: 'cedeao_remitflow'
+version: '1.0.0'
+config-version: 2
+
+profile: 'cedeao_remitflow'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  cedeao_remitflow:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      # pas de matérialisation "incremental" dans ce projet : le mode
+      # BigQuery Sandbox bloque les instructions DML (MERGE / UPDATE),
+      # sur lesquelles repose l'incremental. On reste en "table" (CTAS,
+      # autorisé) pour toute la couche marts, quitte à faire du
+      # full-refresh à chaque run.
+      +materialized: table

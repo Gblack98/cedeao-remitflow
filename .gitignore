@@ -1,0 +1,23 @@
+# secrets — ne JAMAIS committer une clé de service account
+*.json
+!dbt/**/manifest.json
+.env
+
+# python
+venv/
+__pycache__/
+*.pyc
+
+# dbt
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+
+# données générées localement
+data/*.csv
+
+# documents de travail : restent en local
+docs/*
+!docs/schema.md
+
+.DS_Store

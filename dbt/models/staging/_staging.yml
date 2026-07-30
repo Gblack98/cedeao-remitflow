@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: raw
+    dataset: raw
+    tables:
+      - name: taux_change
+        loaded_at_field: recupere_le
+        freshness:
+          warn_after: {count: 26, period: hour}
+          error_after: {count: 48, period: hour}
+      - name: transferts
+
+models:
+  - name: stg_taux_change
+    description: Taux de change quotidiens, base EUR, nettoyés depuis la source brute.
+    columns:
+      - name: devise_cible
+        tests: [not_null]
+      - name: taux
+        tests: [not_null]
+
+  - name: stg_transferts
+    description: Transferts individuels, nettoyés depuis la source brute.
+    columns:
+      - name: transfert_id
+        tests: [not_null, unique]
+      - name: statut
+        tests:
+          - accepted_values:
+              values: ['SUCCESS', 'FAILED', 'PENDING']
