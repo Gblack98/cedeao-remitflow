@@ -13,3 +13,11 @@ select
     recupere_le
 from source
 where taux is not null
+-- Le DAG quotidien charge en WRITE_APPEND : un retour en erreur après un
+-- chargement réussi réinsère la même journée. Sans déduplication ici, la
+-- jointure de int_transferts_avec_taux dupliquerait chaque transfert du
+-- jour concerné. On garde la récupération la plus récente.
+qualify row_number() over (
+    partition by date_taux, devise_cible
+    order by recupere_le desc
+) = 1

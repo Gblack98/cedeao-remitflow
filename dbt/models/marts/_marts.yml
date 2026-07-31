@@ -11,6 +11,22 @@ models:
           - relationships:
               to: ref('dim_devises')
               field: code_devise
+      - name: date_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_temps')
+              field: date_id
+      - name: pays_cible
+        tests:
+          - relationships:
+              to: ref('dim_corridor')
+              field: pays
+      - name: canal
+        tests:
+          - relationships:
+              to: ref('dim_canaux')
+              field: canal
       - name: statut
         tests:
           - accepted_values:
@@ -29,4 +45,10 @@ models:
   - name: dim_canaux
     columns:
       - name: canal
+        tests: [not_null, unique]
+
+  - name: dim_temps
+    description: Date spine, une ligne par jour calendaire.
+    columns:
+      - name: date_id
         tests: [not_null, unique]
