@@ -69,3 +69,36 @@ models:
           - not_null
           - accepted_values:
               values: ['UEMOA', 'ZMAO']
+
+  - name: agg_kpi_global
+    description: Indicateurs de tête, une seule ligne, pour les cartes de score.
+
+  - name: agg_corridors
+    description: Volume et valeur par corridor émetteur/récepteur.
+    columns:
+      - name: pays_source
+        tests: [not_null]
+      - name: transferts
+        tests: [not_null]
+
+  - name: agg_taux_journalier
+    description: Série temporelle des taux, avec indice base 100 par devise.
+    columns:
+      - name: date_id
+        tests: [not_null]
+      - name: taux
+        tests: [not_null]
+
+  - name: agg_impact_change
+    description: >
+      Montant reçu pour 100 000 XOF nets envoyés, du pire au meilleur
+      jour, par type de corridor et devise.
+    columns:
+      - name: devise_cible
+        tests: [not_null, unique]
+
+  - name: agg_couts_canal
+    description: Coût de commission moyen par canal et type de corridor.
+    columns:
+      - name: canal
+        tests: [not_null]
