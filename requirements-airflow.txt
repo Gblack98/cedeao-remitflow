@@ -1,0 +1,11 @@
+# Orchestration — à installer dans un environnement virtuel distinct de
+# celui du pipeline. Airflow épingle des versions de google-cloud-* et de
+# protobuf qui entrent en conflit avec dbt-bigquery.
+#
+#   python -m venv venv-airflow
+#   ./venv-airflow/bin/pip install -r requirements-airflow.txt
+
+apache-airflow==2.9.*
+apache-airflow-providers-google
+requests
+faker

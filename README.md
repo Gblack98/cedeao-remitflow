@@ -20,20 +20,31 @@ Airflow (orchestration) · BigQuery Sandbox (entrepôt) · dbt Core (transformat
 
 Le dashboard s'appuie sur `obt_transferts`, table dénormalisée dérivée du schéma en étoile.
 
-## Installation
+## Lancement
 
 ```bash
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-
-python generator/generate_transfers.py --n 2000 --output data/test.csv
+./run.sh
 ```
+
+Installe les dépendances, configure le profil dbt, charge les données brutes,
+construit les modèles, exécute les tests et ouvre le dashboard sur
+http://localhost:8501.
+
+Options : `--skip-load`, `--skip-dbt`, `--no-dashboard`.
+
+Prérequis : une clé de compte de service BigQuery dans `~/.gcp/remitflow-sa.json`
+(ou `REMITFLOW_KEYFILE`). Le script indique les commandes de création si elle manque.
+
+Airflow s'installe à part (`requirements-airflow.txt`) : il épingle des versions
+incompatibles avec dbt dans un même environnement.
 
 ## Structure
 
 ```
 generator/       simulation des transferts
 airflow/dags/    ingestion des taux de change et des transferts
+scripts/         chargement des données brutes sans ordonnanceur
 dbt/             staging -> intermediate -> marts
+dashboard/       tableau de bord Streamlit
 docs/schema.md   schéma en étoile
 ```

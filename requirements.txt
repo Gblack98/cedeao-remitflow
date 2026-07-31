@@ -1,7 +1,15 @@
-apache-airflow==2.9.*
-apache-airflow-providers-google
+# Pipeline et dashboard — ce qu'installe run.sh.
+# Airflow est volontairement à part (voir requirements-airflow.txt) :
+# il épingle des versions qui entrent en conflit avec dbt dans un même
+# environnement.
+
 dbt-core
 dbt-bigquery
+google-cloud-bigquery
+db-dtypes          # conversion des types NUMERIC/DATE vers pandas
+pandas
 faker
 requests
-google-cloud-bigquery
+
+streamlit
+plotly
