@@ -52,3 +52,20 @@ models:
     columns:
       - name: date_id
         tests: [not_null, unique]
+
+  - name: obt_transferts
+    description: >
+      Table dénormalisée alimentant le dashboard. Grain identique à la
+      table de faits, dimensions aplaties et mesures dérivées incluses.
+    columns:
+      - name: transfert_id
+        tests: [not_null, unique]
+      - name: type_corridor
+        tests:
+          - accepted_values:
+              values: ['Sans risque de change', 'Avec risque de change']
+      - name: zone_cible
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['UEMOA', 'ZMAO']

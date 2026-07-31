@@ -16,7 +16,9 @@ Le XOF est arrimé à taux fixe à l'euro depuis 1999. Un transfert Dakar → Ab
 
 ## Stack
 
-Airflow (orchestration) · BigQuery Sandbox (entrepôt) · dbt Core (transformation et tests) · Grafana Cloud (dashboard).
+Airflow (orchestration) · BigQuery Sandbox (entrepôt) · dbt Core (transformation et tests) · Looker Studio (dashboard).
+
+Le dashboard s'appuie sur `obt_transferts`, table dénormalisée dérivée du schéma en étoile.
 
 ## Installation
 

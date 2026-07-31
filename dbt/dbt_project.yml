@@ -9,6 +9,11 @@ seed-paths: ["seeds"]
 target-path: "target"
 clean-targets: ["target", "dbt_packages"]
 
+vars:
+  # Parité fixe XOF/EUR (accord de coopération monétaire UEMOA/France).
+  # Même valeur que XOF_PER_EUR côté ingestion.
+  xof_per_eur: 655.957
+
 models:
   cedeao_remitflow:
     staging:
