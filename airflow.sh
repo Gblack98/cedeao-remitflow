@@ -28,7 +28,7 @@ export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__CORE__EXECUTOR=SequentialExecutor
 export AIRFLOW__CORE__PARALLELISM=1
 
-PROJET="${REMITFLOW_PROJECT:-crucial-bonsai-418120}"
+PROJET="${REMITFLOW_PROJECT:-gold-rope-458515-b1}"
 KEYFILE="${REMITFLOW_KEYFILE:-$HOME/.gcp/remitflow-sa.json}"
 AF="$RACINE/venv-airflow/bin/airflow"
 

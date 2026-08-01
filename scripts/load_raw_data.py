@@ -47,7 +47,7 @@ def charger(client, projet, rows, table, schema):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--projet", default=os.environ.get("REMITFLOW_PROJECT", "crucial-bonsai-418120"))
+    p.add_argument("--projet", default=os.environ.get("REMITFLOW_PROJECT", "gold-rope-458515-b1"))
     p.add_argument("--keyfile", default=os.environ.get("REMITFLOW_KEYFILE", "~/.gcp/remitflow-sa.json"))
     p.add_argument("--debut", default="2024-01-01")
     p.add_argument("--fin", default=datetime.utcnow().strftime("%Y-%m-%d"))

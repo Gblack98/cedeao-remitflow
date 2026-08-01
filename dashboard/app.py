@@ -15,7 +15,7 @@ import streamlit as st
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
-PROJET = os.environ.get("REMITFLOW_PROJECT", "crucial-bonsai-418120")
+PROJET = os.environ.get("REMITFLOW_PROJECT", "gold-rope-458515-b1")
 DATASET = os.environ.get("REMITFLOW_DATASET", "dbt_dev_gabar")
 KEYFILE = os.path.expanduser(
     os.environ.get("REMITFLOW_KEYFILE", "~/.gcp/remitflow-sa.json")

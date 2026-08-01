@@ -24,7 +24,7 @@ set -euo pipefail
 RACINE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$RACINE"
 
-PROJET="${REMITFLOW_PROJECT:-crucial-bonsai-418120}"
+PROJET="${REMITFLOW_PROJECT:-gold-rope-458515-b1}"
 DATASET="${REMITFLOW_DATASET:-dbt_dev_gabar}"
 KEYFILE="${REMITFLOW_KEYFILE:-$HOME/.gcp/remitflow-sa.json}"
 DEBUT="${REMITFLOW_DEBUT:-2024-01-01}"
