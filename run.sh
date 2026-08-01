@@ -4,9 +4,17 @@
 # des données brutes, transformations, tests, puis dashboard.
 #
 #   ./run.sh                  tout, du début au dashboard
+#   ./run.sh --avec-airflow   idem, en passant aussi par l'orchestrateur
 #   ./run.sh --skip-load      sans recharger les données brutes
 #   ./run.sh --skip-dbt       sans reconstruire les modèles
 #   ./run.sh --no-dashboard   s'arrête après les tests dbt
+#
+# Airflow reste hors du parcours par défaut à dessein. Le chargement de
+# base fixe sa graine aléatoire (random.seed(42) dans load_raw_data.py),
+# ce qui rend les chiffres du rapport reproductibles d'une exécution à
+# l'autre. Les DAGs, eux, ajoutent un lot de transferts non reproductible
+# à chaque passage. --avec-airflow sert à démontrer l'orchestration ;
+# sans l'option, on garde des chiffres stables.
 #
 # Prérequis : une clé de compte de service BigQuery. Par défaut
 # ~/.gcp/remitflow-sa.json, sinon REMITFLOW_KEYFILE.
@@ -22,13 +30,14 @@ KEYFILE="${REMITFLOW_KEYFILE:-$HOME/.gcp/remitflow-sa.json}"
 DEBUT="${REMITFLOW_DEBUT:-2024-01-01}"
 NB_TRANSFERTS="${REMITFLOW_TRANSFERTS:-20000}"
 
-SKIP_LOAD=0; SKIP_DBT=0; DASHBOARD=1
+SKIP_LOAD=0; SKIP_DBT=0; DASHBOARD=1; AIRFLOW=0
 for arg in "$@"; do
   case "$arg" in
+    --avec-airflow) AIRFLOW=1 ;;
     --skip-load)    SKIP_LOAD=1 ;;
     --skip-dbt)     SKIP_DBT=1 ;;
     --no-dashboard) DASHBOARD=0 ;;
-    -h|--help)      sed -n '3,13p' "$0"; exit 0 ;;
+    -h|--help)      sed -n '3,21p' "$0"; exit 0 ;;
     *) echo "option inconnue : $arg" >&2; exit 2 ;;
   esac
 done
@@ -104,7 +113,22 @@ else
   etape "Chargement ignoré (--skip-load)"
 fi
 
-# --- 5. Transformations et tests --------------------------------------
+# --- 5. Orchestration (optionnelle) -----------------------------------
+# Les DAGs tournent via `airflow dags test`, qui les exécute dans le
+# processus courant, sans ordonnanceur en tâche de fond. C'est volontaire :
+# un ordonnanceur laissé tourner puis interrompu abandonne ses tâches en
+# cours (`up_for_retry` sur un run jamais clôturé), ce qui donne l'illusion
+# d'un DAG cassé alors qu'il n'a simplement plus personne pour le relancer.
+# Ici, chaque DAG s'exécute et se termine devant nous.
+if [ "$AIRFLOW" -eq 1 ]; then
+  etape "Orchestration Airflow"
+  REMITFLOW_PROJECT="$PROJET" REMITFLOW_KEYFILE="$KEYFILE" ./airflow.sh install
+  REMITFLOW_PROJECT="$PROJET" REMITFLOW_KEYFILE="$KEYFILE" ./airflow.sh init
+  REMITFLOW_PROJECT="$PROJET" REMITFLOW_KEYFILE="$KEYFILE" ./airflow.sh test
+  echo "interface web disponible séparément : ./airflow.sh web"
+fi
+
+# --- 6. Transformations et tests --------------------------------------
 if [ "$SKIP_DBT" -eq 0 ]; then
   etape "Modèles dbt et tests"
   (cd dbt && "$RACINE/venv/bin/dbt" build)
@@ -112,7 +136,7 @@ else
   etape "dbt ignoré (--skip-dbt)"
 fi
 
-# --- 6. Dashboard -----------------------------------------------------
+# --- 7. Dashboard -----------------------------------------------------
 if [ "$DASHBOARD" -eq 1 ]; then
   etape "Dashboard"
   echo "http://localhost:8501 — Ctrl+C pour arrêter"

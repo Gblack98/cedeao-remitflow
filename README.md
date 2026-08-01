@@ -30,13 +30,40 @@ Installe les dépendances, configure le profil dbt, charge les données brutes,
 construit les modèles, exécute les tests et ouvre le dashboard sur
 http://localhost:8501.
 
-Options : `--skip-load`, `--skip-dbt`, `--no-dashboard`.
+Options : `--avec-airflow`, `--skip-load`, `--skip-dbt`, `--no-dashboard`.
 
 Prérequis : une clé de compte de service BigQuery dans `~/.gcp/remitflow-sa.json`
 (ou `REMITFLOW_KEYFILE`). Le script indique les commandes de création si elle manque.
 
-Airflow s'installe à part (`requirements-airflow.txt`) : il épingle des versions
-incompatibles avec dbt dans un même environnement.
+### Avec l'orchestrateur
+
+```bash
+./run.sh --avec-airflow
+```
+
+Installe Airflow au passage s'il manque, crée sa connexion BigQuery, puis exécute
+les trois DAGs avant de reconstruire les modèles.
+
+Airflow vit dans un environnement virtuel distinct (`requirements-airflow.txt`) :
+il épingle des versions de `google-cloud-*` et de `protobuf` incompatibles avec
+dbt dans un même environnement. `run.sh` s'en occupe, il n'y a rien à installer
+à la main.
+
+L'option reste hors du parcours par défaut à dessein. Le chargement de base fixe
+sa graine aléatoire, ce qui rend les chiffres du rapport reproductibles d'une
+exécution à l'autre ; les DAGs ajoutent à chaque passage un lot de transferts qui
+ne l'est pas.
+
+Pour l'interface graphique (captures d'écran, démonstration) :
+
+```bash
+./airflow.sh web        # http://localhost:8080
+./airflow.sh test       # exécute les trois DAGs sans ordonnanceur
+```
+
+Préférer `test` à un ordonnanceur laissé en tâche de fond : interrompre ce
+dernier abandonne ses tâches en cours, qui restent affichées en `up_for_retry`
+sur un run jamais clôturé — un DAG parfaitement sain paraît alors cassé.
 
 ## Structure
 
