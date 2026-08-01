@@ -20,6 +20,8 @@ from google.cloud import bigquery
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "generator"))
 from generate_transfers import generate_one  # noqa: E402
 
+from bq_schemas import SCHEMA_TRANSFERTS  # noqa: E402
+
 N_PAR_LOT = 200
 
 default_args = {
@@ -40,10 +42,11 @@ def generate_and_load(**context):
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        autodetect=True,
+        schema=SCHEMA_TRANSFERTS,
     )
     load_job = client.load_table_from_json(rows, table_id, job_config=job_config)
-    load_job.result()
+    load_job.result()  # attend la fin du job, lève une exception si échec
+    print(f"{len(rows)} transferts chargés dans raw.transferts")
 
 
 with DAG(

@@ -5,8 +5,15 @@
 
 # python
 venv/
+venv-airflow/
 __pycache__/
 *.pyc
+
+# airflow local : base sqlite, logs, config machine
+airflow_home/
+airflow.db
+airflow.cfg
+webserver_config.py
 
 # dbt
 dbt/target/

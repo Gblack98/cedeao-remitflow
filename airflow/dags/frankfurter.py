@@ -91,6 +91,8 @@ def load_to_bigquery(rows, write_disposition="WRITE_APPEND"):
     from airflow.providers.google.cloud.hooks.bigquery import BigQueryHook
     from google.cloud import bigquery
 
+    from bq_schemas import SCHEMA_TAUX
+
     if not rows:
         raise ValueError("aucun taux à charger : réponse de l'API vide")
 
@@ -98,18 +100,10 @@ def load_to_bigquery(rows, write_disposition="WRITE_APPEND"):
     client = hook.get_client()
     table_id = f"{hook.project_id}.raw.taux_change"
 
-    schema = [
-        bigquery.SchemaField("date_taux", "DATE", mode="REQUIRED"),
-        bigquery.SchemaField("devise_base", "STRING", mode="REQUIRED"),
-        bigquery.SchemaField("devise_cible", "STRING", mode="REQUIRED"),
-        bigquery.SchemaField("taux", "NUMERIC", mode="REQUIRED"),
-        bigquery.SchemaField("recupere_le", "TIMESTAMP", mode="REQUIRED"),
-    ]
-
     job_config = bigquery.LoadJobConfig(
         write_disposition=write_disposition,
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        schema=schema,
+        schema=SCHEMA_TAUX,
     )
     load_job = client.load_table_from_json(rows, table_id, job_config=job_config)
     load_job.result()  # attend la fin du job, lève une exception si échec

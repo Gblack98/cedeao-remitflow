@@ -21,31 +21,10 @@ sys.path.insert(0, os.path.join(RACINE, "generator"))
 
 from frankfurter import fetch_rates  # noqa: E402
 from generate_transfers import generate_one  # noqa: E402
+from bq_schemas import SCHEMA_TAUX, SCHEMA_TRANSFERTS  # noqa: E402
 
 from google.cloud import bigquery  # noqa: E402
 from google.oauth2 import service_account  # noqa: E402
-
-SCHEMA_TAUX = [
-    bigquery.SchemaField("date_taux", "DATE", mode="REQUIRED"),
-    bigquery.SchemaField("devise_base", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("devise_cible", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("taux", "NUMERIC", mode="REQUIRED"),
-    bigquery.SchemaField("recupere_le", "TIMESTAMP", mode="REQUIRED"),
-]
-
-SCHEMA_TRANSFERTS = [
-    bigquery.SchemaField("transfert_id", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("date_transfert", "DATE", mode="REQUIRED"),
-    bigquery.SchemaField("heure_transfert", "STRING"),
-    bigquery.SchemaField("pays_source", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("pays_cible", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("devise_source", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("devise_cible", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("canal", "STRING", mode="REQUIRED"),
-    bigquery.SchemaField("montant_source_xof", "NUMERIC", mode="REQUIRED"),
-    bigquery.SchemaField("frais_transaction_xof", "NUMERIC", mode="REQUIRED"),
-    bigquery.SchemaField("statut", "STRING", mode="REQUIRED"),
-]
 
 
 def assurer_dataset(client, projet, nom="raw", location="EU"):
